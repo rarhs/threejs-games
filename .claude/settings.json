@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Select-Object *)",
+      "PowerShell(Set-Location *)",
+      "mcp__claude-in-chrome__read_console_messages",
+      "PowerShell(Get-ChildItem *)",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "PowerShell(Test-Path *)",
+      "mcp__claude-in-chrome__find",
+      "mcp__claude-in-chrome__read_network_requests",
+      "mcp__claude-in-chrome__get_page_text",
+      "PowerShell(Select-String *)",
+      "PowerShell(ConvertFrom-Json *)",
+      "PowerShell(Format-List *)",
+      "PowerShell(npm view *)",
+      "PowerShell(Get-Process *)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm run typecheck)",
+      "PowerShell(pnpm typecheck)",
+      "PowerShell(pnpm run typecheck)"
+    ]
+  }
+}
