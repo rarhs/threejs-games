@@ -19,3 +19,5 @@ pnpm workspaces monorepo for three.js games (workspaces defined in `pnpm-workspa
 ## Git
 
 - Never add "Co-Authored-By: Claude" or any similar AI-attribution trailer to commit messages. Write plain commit messages describing the change only.
+- `main` is protected (GitHub ruleset): no direct pushes. All work happens on a branch, goes through a pull request, and merges only when the `ci` status check passes. CI must also be up to date with `main` (strict checks) — rebase or update the branch if `main` moved.
+- Remote is HTTPS with `gh` as the credential helper (no SSH key on this machine).
