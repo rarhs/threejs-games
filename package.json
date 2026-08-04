@@ -2,14 +2,11 @@
   "name": "threejs-games",
   "private": true,
   "version": "0.0.0",
-  "workspaces": [
-    "packages/*",
-    "games/*"
-  ],
+  "packageManager": "pnpm@11.20.0",
   "scripts": {
-    "dev": "npm run dev -w games/starter",
-    "build": "npm run build --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "dev": "pnpm --filter @games/starter dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck"
   },
   "dependencies": {
     "three": "^0.185.1"

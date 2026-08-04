@@ -10,7 +10,7 @@
     "typecheck": "tsc -p ."
   },
   "dependencies": {
-    "@games/shared": "*",
+    "@games/shared": "workspace:*",
     "three": "^0.185.1"
   }
 }
