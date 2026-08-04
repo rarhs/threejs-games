@@ -1,0 +1,16 @@
+{
+  "name": "@games/starter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@games/shared": "*",
+    "three": "^0.185.1"
+  }
+}
