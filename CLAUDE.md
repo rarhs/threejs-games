@@ -7,6 +7,7 @@ pnpm workspaces monorepo for three.js games (workspaces defined in `pnpm-workspa
 - `pnpm dev` — dev server for `games/starter`; for any other game: `pnpm --filter @games/<name> dev`
 - `pnpm build` — builds every workspace (`pnpm -r build`, skips workspaces without the script)
 - `pnpm typecheck` — typechecks every workspace; each workspace has its own `"typecheck": "tsc -p ."` script. When adding a new game or package, include that script so the root aggregate picks it up.
+- `pnpm lint` — ESLint over the whole repo from the root (single flat config in `eslint.config.mjs`, typescript-eslint recommendedTypeChecked). No per-workspace lint scripts or configs.
 
 ## Conventions
 
