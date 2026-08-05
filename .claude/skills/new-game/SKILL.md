@@ -63,15 +63,18 @@ Read the `three` version from `games/starter/package.json` and reuse it **verbat
 
 **`games/<name>/src/main.ts`** — bootstrap through `createGame` from `@games/shared` (never hand-roll renderer/scene/camera/resize). If the user described gameplay, start from that; otherwise copy the starter's shape: lights, ground, one placeholder mesh, `game.start((dt, elapsed) => ...)`.
 
+**`games/<name>/e2e/smoke.spec.ts`** — mandatory. Copy `games/starter/e2e/smoke.spec.ts` as-is (page loads, canvas visible, no console errors after a few frames). The root `playwright.config.ts` auto-discovers `games/*` and **throws if this directory is missing**, so skipping it breaks `pnpm test` for the whole repo. Extend it with game-specific assertions if the gameplay warrants.
+
 ### 4. Verify
 
 ```
 pnpm install
 pnpm --filter @games/<name> typecheck
 pnpm --filter @games/<name> build
+pnpm test:e2e --project <name>
 ```
 
-`pnpm install` links the new workspace and updates `pnpm-lock.yaml` — that lockfile change must be committed with the scaffold. Optionally smoke-test rendering: start `pnpm --filter @games/<name> dev` in the background and check the page with the browser-automation skill (canvas present, no console errors), then stop the server.
+`pnpm install` links the new workspace and updates `pnpm-lock.yaml` — that lockfile change must be committed with the scaffold. The `test:e2e` run needs Playwright's browser once per machine: `pnpm exec playwright install chromium`.
 
 ### 5. Pull request
 
