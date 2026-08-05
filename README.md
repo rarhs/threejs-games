@@ -22,10 +22,17 @@ For any other game: `pnpm --filter @games/<name> dev`
 
 ## Adding a new game
 
-1. Copy `games/starter` to `games/<your-game>`.
+1. Copy `games/starter` to `games/<your-game>` (including `e2e/` — see Testing below).
 2. In its `package.json`, change `"name"` to `@games/<your-game>` and keep the `"typecheck"` script — the root `pnpm typecheck` (`pnpm -r`) silently skips workspaces without it.
 3. Run `pnpm install` from the root (links the new workspace and updates `pnpm-lock.yaml` — commit that too).
 4. Run it: `pnpm --filter @games/<your-game> dev`
+
+## Testing
+
+`pnpm test` runs unit tests, then Playwright smoke tests. One-time local setup: `pnpm exec playwright install chromium`.
+
+- **Unit tests** (Vitest) cover pure logic. They live next to the source as `*.test.ts`; a workspace with unit tests declares `"test": "vitest run"` and the root `pnpm test:unit` (`pnpm -r test`) picks it up.
+- **Smoke tests** (Playwright): every game must have an `e2e/smoke.spec.ts` (load the page, canvas visible, no console errors). The root `playwright.config.ts` auto-discovers `games/*`, starts each game's dev server, and **fails if a game has no `e2e/` directory** — so a new game can't skip it. Run one game's tests with `pnpm test:e2e --project <name>`.
 
 ## Conventions
 
@@ -36,4 +43,4 @@ For any other game: `pnpm --filter @games/<name> dev`
 
 ## Contributing
 
-`main` is protected — no direct pushes. Work on a branch, open a pull request, and merge once the `ci` check passes (lint, typecheck, build). The branch must be up to date with `main`.
+`main` is protected — no direct pushes. Work on a branch, open a pull request, and merge once the `ci` check passes (lint, typecheck, build, test). The branch must be up to date with `main`.

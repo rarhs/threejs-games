@@ -8,13 +8,16 @@ pnpm workspaces monorepo for three.js games (workspaces defined in `pnpm-workspa
 - `pnpm build` — builds every workspace (`pnpm -r build`, skips workspaces without the script)
 - `pnpm typecheck` — typechecks every workspace; each workspace has its own `"typecheck": "tsc -p ."` script. When adding a new game or package, include that script so the root aggregate picks it up.
 - `pnpm lint` — ESLint over the whole repo from the root (single flat config in `eslint.config.mjs`, typescript-eslint recommendedTypeChecked). No per-workspace lint scripts or configs.
+- `pnpm test` — unit tests then smoke tests. `pnpm test:unit` runs `pnpm -r test` (Vitest; only workspaces with a `test` script). `pnpm test:e2e` runs Playwright from the root config. One-time local setup: `pnpm exec playwright install chromium`.
 
 ## Conventions
 
 - Shared code lives in `packages/shared` (`@games/shared`) and is consumed as **raw TypeScript**: its `exports`/`main`/`types` point at `src/index.ts` — no build step. Vite transpiles it when bundling each game; `moduleResolution: "bundler"` makes tsc resolve it the same way.
 - Games depend on it with `"@games/shared": "workspace:*"` in `dependencies`.
 - `three` is a `peerDependency` of `packages/shared`; each game declares its own `three` dependency. Keep versions aligned so npm dedupes to a single three.js instance (duplicates break `instanceof` checks).
-- All tsconfigs extend `tsconfig.base.json` (strict, ES2022, `noEmit`).
+- All tsconfigs extend `tsconfig.base.json` (strict, ES2022, `noEmit`). The root `tsconfig.json` is its own small project covering `playwright.config.ts` and `games/*/e2e`; game/package tsconfigs include only `src`.
+- Unit tests (Vitest) are for pure logic and live next to the source as `*.test.ts`; keep game logic in plain functions so it stays testable. A workspace with unit tests declares `"test": "vitest run"`.
+- **Every game must have `e2e/smoke.spec.ts`** (Playwright: page loads, canvas visible, no console errors). The root `playwright.config.ts` auto-discovers `games/*`, assigns each a port, and throws if a game lacks `e2e/` — copy `games/starter/e2e` when scaffolding.
 - Line endings are LF everywhere, enforced by `.gitattributes`.
 
 ## Git
