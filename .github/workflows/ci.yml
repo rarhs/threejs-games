@@ -31,6 +31,16 @@ jobs:
 
       - run: pnpm build
 
+      # Cache Playwright's browser download (~115 MB), keyed on the Playwright version
+      - id: playwright-version
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+
+      # Skips the download on a cache hit; still installs OS deps
       - run: pnpm exec playwright install --with-deps chromium
 
       - run: pnpm test

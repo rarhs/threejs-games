@@ -15,7 +15,10 @@ export interface Game {
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
-  /** Start the render loop. `update` runs every frame with dt (seconds) and elapsed time. */
+  /**
+   * Start the render loop. `update` runs every frame with dt (seconds) and elapsed time.
+   * Elapsed time pauses while stopped or while the tab is hidden; it does not reset on restart.
+   */
   start(update?: (dt: number, elapsed: number) => void): void;
   /** Stop the render loop. */
   stop(): void;
@@ -62,7 +65,10 @@ export function createGame(options: GameOptions = {}): Game {
   window.addEventListener("resize", resize);
   resize();
 
-  const clock = new THREE.Clock();
+  const timer = new THREE.Timer();
+  // Page Visibility API: while the tab is hidden the timer reports zero delta,
+  // so elapsed time excludes hidden periods.
+  timer.connect(document);
   let running = false;
 
   return {
@@ -72,11 +78,12 @@ export function createGame(options: GameOptions = {}): Game {
     start(update) {
       if (running) return;
       running = true;
-      clock.start();
-      renderer.setAnimationLoop(() => {
-        // Cap dt so a backgrounded tab doesn't produce a giant physics step.
-        const dt = Math.min(clock.getDelta(), 1 / 30);
-        update?.(dt, clock.elapsedTime);
+      timer.reset();
+      renderer.setAnimationLoop((time) => {
+        timer.update(time);
+        // Cap dt so a long stall doesn't produce a giant physics step.
+        const dt = Math.min(timer.getDelta(), 1 / 30);
+        update?.(dt, timer.getElapsed());
         renderer.render(scene, camera);
       });
     },
@@ -87,6 +94,7 @@ export function createGame(options: GameOptions = {}): Game {
     dispose() {
       this.stop();
       window.removeEventListener("resize", resize);
+      timer.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     },
